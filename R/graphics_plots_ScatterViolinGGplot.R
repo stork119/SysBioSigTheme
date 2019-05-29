@@ -7,14 +7,51 @@ ScatterViolinGGplot <-
            y_,
            point.size = 0.5,
            point.alpha = 0.5,
-           scaled = TRUE){
+           scale.value = 2,
+           scaled = TRUE,
+           facet.rows = NULL,
+           facet.cols = NULL,
+           colors.limits = NULL){
     x.list <-
       (data %>%
          dplyr::distinct_(x_))[[x_]]
 
-    foreach(x = x.list) %do% {
+    facet.rows.list <- NA
+    facet.cols.list <- NA
+    if(!is.null(facet.rows)){
+      facet.rows.list <-
+        (data %>%
+           dplyr::distinct_(facet.rows))[[facet.rows]]
+    }
+    if(!is.null(facet.cols)){
+      facet.cols.list <-
+        (data %>%
+           dplyr::distinct_(facet.cols))[[facet.cols]]
+    }
+
+    expand.grid(x = x.list,
+                facet.rows = facet.rows.list,
+                facet.cols = facet.cols.list,
+                stringsAsFactors = FALSE) ->
+      groups.df
+
+
+    foreach(group.i = 1:nrow(groups.df)) %do% {
+      filter.string <- paste(x_, "==", groups.df[group.i,"x"])
+      if(!is.null(facet.rows)){
+        filter.string <-
+          paste(filter.string, "&",
+                facet.rows, "==", groups.df[group.i,"facet.rows"]
+          )
+      }
+      if(!is.null(facet.cols)){
+        filter.string <-
+          paste(filter.string, "&",
+                facet.cols, "==", groups.df[group.i,"facet.cols"]
+          )
+      }
       data.subset <- data %>%
-        dplyr::filter_(paste(x_, "==", x)) %>%
+        dplyr::filter_(filter.string) %>%
         dplyr::arrange_(y_)
       dens <- density(x = data.subset[[y_]], n = nrow(data.subset))
       data.subset$density <- dens$y
@@ -37,8 +74,8 @@ ScatterViolinGGplot <-
              dplyr::summarise(scale = max(density))),
           by = x_) %>%
         dplyr::mutate(density.scaled =
-                        (density/scale)/2
-                        ) ->
+                        (density/scale)/scale.value
+        ) ->
         data.subset.all
     }
 
@@ -52,28 +89,28 @@ ScatterViolinGGplot <-
       dplyr::left_join(df.rescale) ->
       data.subset.all
 
-    # data.subset.all$position <-
-    #   rnorm(mean = 0*data.subset.all$density,
-    #         sd = data.subset.all$density.scaled,
-    #         n = nrow(data.subset.all))
-
     data.subset.all$position <-
       runif(min = -data.subset.all$density.scaled,
             max =  data.subset.all$density.scaled,
             n   = nrow(data.subset.all))
 
-    ggplot(data.subset.all,
-           mapping =
-             aes_string(x = paste("scaled", "+", "position"),
-                        y = y_,
-                        group = x_,
-                        position = "density",
-                        color = "density")) +
+    g.plot <-
+      ggplot(data.subset.all,
+             mapping =
+               aes_string(x = paste("scaled", "+", "position"),
+                          y = y_,
+                          group = x_,
+                          position = "density",
+                          color = "density")) +
       geom_point(size = point.size,
                  alpha = point.alpha) +
       scale_x_continuous(
         breaks = df.rescale$scaled,
         labels = df.rescale[[x_]]) +
-      scale_color_viridis() +
-      SysBioSigTheme::theme_sysbiosig()
+      GetColorsScale(colors.limits = colors.limits) +
+      SysBioSigTheme::theme_sysbiosig() +
+      GetFacetFormula(facet.rows = facet.rows,
+                      facet.cols = facet.cols)
+
+    return(g.plot)
   }

@@ -33,6 +33,8 @@ data <- normalize_data(read.table([PATH_TO_FILE],
                                    header=TRUE, sep=","))$data
 ```
 
+### Themes
+Instead of `theme_jetka()` you can use new theme function `theme_sysbiosig()`
 
 ### Scatter plots
 In order to plot novel scatter plots use functions `ScatterBoxplotGGplot`:
