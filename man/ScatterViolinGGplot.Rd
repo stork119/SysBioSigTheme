@@ -5,7 +5,29 @@
 \title{ScatterViolinGGplot}
 \usage{
 ScatterViolinGGplot(data, x_, y_, point.size = 0.5, point.alpha = 0.5,
-  scaled = TRUE)
+  scale.value = 2, scaled = TRUE, colors.limits = NULL,
+  facet.rows = NULL, facet.cols = NULL, ...)
+}
+\arguments{
+\item{x_}{- x axis}
+
+\item{y_}{- y axis}
+
+\item{colors.limits}{- c(minimal color value, maximal color value)}
+
+\item{facet.rows}{- column name used to create facet rows}
+
+\item{facet.cols}{- column name used to create facet cols}
+
+\item{...}{Arguments passed on to \code{rescaleDensitiesValues}
+\describe{
+  \item{density.rescale.fun}{parameter, that defines a function used for rescaling signals in plots.
+There are three built-in functions, that can be chosen:
+(1) \code{'numeric'},
+(2) \code{logarithmic} - with base defined in \code{density.rescale.fun.args} - default: \code{e = exp(1)}.
+Function must be defined as a lambda construct \code{function(x, ...){...}}.}
+  \item{density.rescale.fun.args}{list of the arguments to defaults \code{density.rescale.fun}}
+}}
 }
 \description{
 ScatterViolinGGplot

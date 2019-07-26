@@ -98,10 +98,21 @@ theme_sysbiosig <-  function(
 
   theme.dots.args <- list(...)
   if(length(theme.dots.args) > 0){
-    theme.combine.args <-
-      append(
-        x = theme.dots.args,
-        values = theme.args[-which(names(theme.args) %in% names(theme.dots.args))])
+    args.ids <- which(names(theme.dots.args) %in% names(ggplot2::theme_get()))
+    if( length(args.ids) == 0 ){
+      theme.dots.args <- list()
+    } else {
+      theme.dots.args <- theme.dots.args[args.ids]
+    }
+    theme.combine.ids <- -which(names(theme.args) %in% names(theme.dots.args))
+    if(length(theme.combine.ids) == 0){
+      theme.combine.args <- theme.args
+    } else {
+      theme.combine.args <-
+        append(
+          x = theme.dots.args,
+          values = theme.args[theme.combine.ids])
+    }
   } else {
     theme.combine.args <- theme.args
   }

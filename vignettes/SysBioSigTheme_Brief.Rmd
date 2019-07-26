@@ -4,6 +4,7 @@ author: "Karol Nienałtowski"
 output:
   html_document:
     df_print: paged
+  pdf_document: default
 email: k.nienaltowski@sysbiosig.org
 vignette: |
   %\VignetteIndexEntry{Vignette Title} %\VignetteEngine{knitr::rmarkdown} %\VignetteEncoding{UTF-8} \usepackage[utf8]{inputenc}
@@ -55,3 +56,56 @@ ScatterViolinGGplot(data = SysBioSigTheme::data.jarek,
                      y_ = "Intensity_MeanIntensity_Alexa") +
   coord_cartesian(ylim = c(0,50))
 ```
+
+
+### Additional Parameters
+You can change limits of the densities colors  using parameter `colors.limits`:
+
+```{r echo=TRUE, eval=TRUE, fig.width=8, fig.height=4}
+
+ScatterBoxplotGGplot(data = SysBioSigTheme::data.jarek,
+                     x_ = "stimulation.1.1",
+                     y_ = "Intensity_MeanIntensity_Alexa",
+                     colors.limits = c(0, 0.025)) +
+  coord_cartesian(ylim = c(0,50))
+```
+
+
+You can rescale colors pallete densities colors  using parameter `density.rescale.fun`.
+Parameter `density.rescale.fun` defines a function used for rescaling signals in plots. There are three built-in functions, that can be chosen: (1) 'numeric', (2) logarithmic - with base defined in density.rescale.fun.args - default: e = exp(1). Function must be defined as a lambda construct function(x, ...){...}.
+If you want to use logarithimic scale of densities colors set parameter `density.rescale.fun = "log"`. 
+
+
+```{r echo=TRUE, eval=TRUE, fig.width=8, fig.height=4}
+
+ScatterBoxplotGGplot(data = SysBioSigTheme::data.jarek,
+                     x_ = "stimulation.1.1",
+                     y_ = "Intensity_MeanIntensity_Alexa",
+                     density.rescale.fun = "log") +
+  coord_cartesian(ylim = c(0,50))
+```
+
+
+You can also use your own function. For example `density.rescale.fun = function(x){5*log(x, base = 10)}`. 
+
+```{r echo=TRUE, eval=TRUE, fig.width=8, fig.height=4}
+
+ScatterBoxplotGGplot(data = SysBioSigTheme::data.jarek,
+                     x_ = "stimulation.1.1",
+                     y_ = "Intensity_MeanIntensity_Alexa",
+                     density.rescale.fun = function(x){5*log(x, base = 10)}) +
+  coord_cartesian(ylim = c(0,50))
+```
+
+
+You can modify themes by adding special thee parameters. All possible parameters of theme function you can find in `theme` description `?theme`. For instance you can manipulate position of the legend using `legend.position`. You can choose `("none", "left", "right", "bottom", "top", or two-element numeric vector)`. For instance legend is removed, when `legend.position = "none"`.
+
+```{r echo=TRUE, eval=TRUE, fig.width=8, fig.height=4}
+
+ScatterBoxplotGGplot(data = SysBioSigTheme::data.jarek,
+                     x_ = "stimulation.1.1",
+                     y_ = "Intensity_MeanIntensity_Alexa",
+                     legend.position = "none") +
+  coord_cartesian(ylim = c(0,50))
+```
+

@@ -1,5 +1,12 @@
 #' ScatterViolinGGplot
 #' @description ScatterViolinGGplot
+#' @param x_ - x axis
+#' @param y_ - y axis
+#' @param colors.limits - c(minimal color value, maximal color value)
+#' @param facet.rows - column name used to create facet rows
+#' @param facet.cols - column name used to create facet cols
+#'
+#' @inheritDotParams rescaleDensitiesValues
 #' @export
 ScatterViolinGGplot <-
   function(data,
@@ -9,61 +16,23 @@ ScatterViolinGGplot <-
            point.alpha = 0.5,
            scale.value = 2,
            scaled = TRUE,
+           colors.limits = NULL,
            facet.rows = NULL,
            facet.cols = NULL,
-           colors.limits = NULL){
-    x.list <-
-      (data %>%
-         dplyr::distinct_(x_))[[x_]]
+           ...){
 
-    facet.rows.list <- NA
-    facet.cols.list <- NA
-    if(!is.null(facet.rows)){
-      facet.rows.list <-
-        (data %>%
-           dplyr::distinct_(facet.rows))[[facet.rows]]
-    }
-    if(!is.null(facet.cols)){
-      facet.cols.list <-
-        (data %>%
-           dplyr::distinct_(facet.cols))[[facet.cols]]
-    }
-
-    expand.grid(x = x.list,
-                facet.rows = facet.rows.list,
-                facet.cols = facet.cols.list,
-                stringsAsFactors = FALSE) ->
-      groups.df
-
-
-    foreach(group.i = 1:nrow(groups.df)) %do% {
-      filter.string <- paste(x_, "==", groups.df[group.i,"x"])
-      if(!is.null(facet.rows)){
-        filter.string <-
-          paste(filter.string, "&",
-                facet.rows, "==", groups.df[group.i,"facet.rows"]
-          )
-      }
-      if(!is.null(facet.cols)){
-        filter.string <-
-          paste(filter.string, "&",
-                facet.cols, "==", groups.df[group.i,"facet.cols"]
-          )
-      }
-      data.subset <- data %>%
-        dplyr::filter_(filter.string) %>%
-        dplyr::arrange_(y_)
-      dens <- density(x = data.subset[[y_]], n = nrow(data.subset))
-      data.subset$density <- dens$y
-      return(data.subset)
-    } -> data.subset.list
-
-    do.call(what = rbind,
-            args = data.subset.list) ->
-      data.subset.all
+    data.subset.all <-
+      GetSamplesDensities(
+        data = data,
+        x_ = x_,
+        y_ = y_,
+        facet.rows = facet.rows,
+        facet.cols = facet.cols,
+        ...
+      )
 
     if(scaled){
-      scale <- 2*max(data.subset.all$density)
+      scale <- scale.value*max(data.subset.all$density)
       data.subset.all$density.scaled <-
         data.subset.all$density/scale
     } else {
@@ -101,14 +70,14 @@ ScatterViolinGGplot <-
                           y = y_,
                           group = x_,
                           position = "density",
-                          color = "density")) +
+                          color = "density.rescaled")) +
       geom_point(size = point.size,
                  alpha = point.alpha) +
       scale_x_continuous(
         breaks = df.rescale$scaled,
         labels = df.rescale[[x_]]) +
       GetColorsScale(colors.limits = colors.limits) +
-      SysBioSigTheme::theme_sysbiosig() +
+      SysBioSigTheme::theme_sysbiosig(...) +
       GetFacetFormula(facet.rows = facet.rows,
                       facet.cols = facet.cols)
 
