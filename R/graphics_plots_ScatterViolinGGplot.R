@@ -16,7 +16,6 @@ ScatterViolinGGplot <-
            point.alpha = 0.5,
            scale.value = 2,
            scaled = TRUE,
-           colors.limits = NULL,
            facet.rows = NULL,
            facet.cols = NULL,
            ...){
@@ -76,7 +75,7 @@ ScatterViolinGGplot <-
       scale_x_continuous(
         breaks = df.rescale$scaled,
         labels = df.rescale[[x_]]) +
-      GetColorsScale(colors.limits = colors.limits) +
+      GetColorsScale(...) +
       SysBioSigTheme::theme_sysbiosig(...) +
       GetFacetFormula(facet.rows = facet.rows,
                       facet.cols = facet.cols)
