@@ -9,19 +9,22 @@ GetSamplesDensities <-
   ){
     x.list <-
       (data %>%
-         dplyr::distinct_(x_))[[x_]]
+         dplyr::distinct_(x_) %>%
+         dplyr::arrange_(x_))[[x_]]
 
   facet.rows.list <- NA
   facet.cols.list <- NA
   if(!is.null(facet.rows)){
     facet.rows.list <-
       (data %>%
-         dplyr::distinct_(facet.rows))[[facet.rows]]
+         dplyr::distinct_(facet.rows) %>%
+         dplyr::arrange_(facet.rows))[[facet.rows]]
   }
   if(!is.null(facet.cols)){
     facet.cols.list <-
       (data %>%
-         dplyr::distinct_(facet.cols))[[facet.cols]]
+         dplyr::distinct_(facet.cols) %>%
+         dplyr::arrange_(facet.cols))[[facet.cols]]
   }
 
   expand.grid(x = x.list,
@@ -45,12 +48,17 @@ GetSamplesDensities <-
               facet.cols, "==", groups.df[group.i,"facet.cols"]
         )
     }
-    data.subset <- data %>%
+    data.subset <-
+      data %>%
       dplyr::filter_(filter.string) %>%
       dplyr::arrange_(y_)
-    dens <- density(x = data.subset[[y_]], n = nrow(data.subset))
-    data.subset$density <- dens$y
-    return(data.subset)
+    if(nrow(data.subset) != 0){
+      dens <- density(x = data.subset[[y_]], n = nrow(data.subset))
+      data.subset$density <- dens$y
+      return(data.subset)
+    } else {
+      return()
+    }
   } -> data.subset.list
 
   do.call(what = rbind,
