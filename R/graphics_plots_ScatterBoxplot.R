@@ -1,4 +1,4 @@
-#' ScatterBoxplotGGplot
+#' ScatterBoxplot
 #' @description ScatterBoxplotGGplot
 #' @param x_ - x axis
 #' @param y_ - y axis
@@ -8,15 +8,13 @@
 #'
 #' @inheritDotParams rescaleDensitiesValues
 #' @export
-ScatterBoxplotGGplot <-
+ScatterBoxplot <-
   function(data,
            x_,
            y_,
            point.size = 0.5,
            point.alpha = 0.1,
            point.scale = 0.25,
-           facet.rows = NULL,
-           facet.cols = NULL,
            ...){
 
     data.subset.all <-
@@ -24,8 +22,6 @@ ScatterBoxplotGGplot <-
         data = data,
         x_ = x_,
         y_ = y_,
-        facet.rows = facet.rows,
-        facet.cols = facet.cols,
         ...
       )
 
@@ -56,17 +52,14 @@ ScatterBoxplotGGplot <-
                aes_string(x = paste("scaled", "+", "position"),
                           y = y_,
                           group = x_,
-                          position = "density",
-                          color = "density.rescaled")) +
+                          ...
+                         )) +
       geom_point(size = point.size,
                  alpha = point.alpha) +
       scale_x_continuous(
         breaks = df.rescale$scaled,
         labels = df.rescale[[x_]]) +
-      GetColorsScale(...) +
-      SysBioSigTheme::theme_sysbiosig(...) +
-      GetFacetFormula(facet.rows = facet.rows,
-                      facet.cols = facet.cols)
+      SysBioSigTheme::theme_sysbiosig(...)
 
     return(g.plot)
   }

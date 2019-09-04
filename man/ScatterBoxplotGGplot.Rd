@@ -5,8 +5,7 @@
 \title{ScatterBoxplotGGplot}
 \usage{
 ScatterBoxplotGGplot(data, x_, y_, point.size = 0.5, point.alpha = 0.1,
-  point.scale = 0.25, scaled = TRUE, scale.value = 2,
-  facet.rows = NULL, facet.cols = NULL, ...)
+  point.scale = 0.25, facet.rows = NULL, facet.cols = NULL, ...)
 }
 \arguments{
 \item{x_}{- x axis}
