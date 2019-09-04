@@ -5,15 +5,13 @@
 \title{ScatterViolinGGplot}
 \usage{
 ScatterViolinGGplot(data, x_, y_, point.size = 0.5, point.alpha = 0.5,
-  scale.value = 2, scaled = TRUE, colors.limits = NULL,
-  facet.rows = NULL, facet.cols = NULL, ...)
+  scale.value = 2, scaled = TRUE, facet.rows = NULL,
+  facet.cols = NULL, ...)
 }
 \arguments{
 \item{x_}{- x axis}
 
 \item{y_}{- y axis}
-
-\item{colors.limits}{- c(minimal color value, maximal color value)}
 
 \item{facet.rows}{- column name used to create facet rows}
 
@@ -28,6 +26,8 @@ There are three built-in functions, that can be chosen:
 Function must be defined as a lambda construct \code{function(x, ...){...}}.}
   \item{density.rescale.fun.args}{list of the arguments to defaults \code{density.rescale.fun}}
 }}
+
+\item{colors.limits}{- c(minimal color value, maximal color value)}
 }
 \description{
 ScatterViolinGGplot

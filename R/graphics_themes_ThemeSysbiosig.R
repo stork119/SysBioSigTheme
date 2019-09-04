@@ -70,8 +70,8 @@ theme_sysbiosig <-  function(
       legend.background =
         ggplot2::element_rect(fill = "white"),
       panel.grid =
-        ggplot2::element_line(colour = NULL),
-      panel.grid.major =
+      # ggplot2::element_line(colour = NULL),
+      #panel.grid.major =
         ggplot2::element_line(
           colour = "#D2D2D2"
           # ggthemes::ggthemes_data$fivethirtyeight$value[2]
@@ -99,6 +99,7 @@ theme_sysbiosig <-  function(
   theme.dots.args <- list(...)
   if(length(theme.dots.args) > 0){
     args.ids <- which(names(theme.dots.args) %in% names(ggplot2::theme_get()))
+
     if( length(args.ids) == 0 ){
       theme.dots.args <- list()
     } else {

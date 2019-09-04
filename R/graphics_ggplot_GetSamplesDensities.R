@@ -3,8 +3,8 @@ GetSamplesDensities <-
     data,
     x_,
     y_,
-    facet.rows,
-    facet.cols,
+    facet.rows = NULL,
+    facet.cols = NULL,
     ...
   ){
     x.list <-
