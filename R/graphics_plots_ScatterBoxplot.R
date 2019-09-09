@@ -12,9 +12,11 @@ ScatterBoxplot <-
   function(data,
            x_,
            y_,
+           labels_ = x_,
            point.size = 0.5,
            point.alpha = 0.1,
            point.scale = 0.25,
+           point.color = NULL,
            ...){
 
     data.subset.all <-
@@ -33,8 +35,8 @@ ScatterBoxplot <-
 
     df.rescale <-
       (data.subset.all %>%
-         dplyr::distinct_(x_) %>%
-         dplyr::arrange_(x_))
+         dplyr::distinct_(x_, labels_) %>%
+         dplyr::arrange_(x_, labels_))
     df.rescale$scaled <- 1:nrow(df.rescale)
 
     data.subset.all %>%
@@ -46,6 +48,13 @@ ScatterBoxplot <-
             max =  point.scale,
             n   = nrow(data.subset.all))
 
+    point.args <-
+      list(size = point.size,
+           alpha = point.alpha)
+    if(!is.null(point.color)){
+      point.args$color <- point.color
+    }
+
     g.plot <-
       ggplot(data.subset.all,
              mapping =
@@ -54,11 +63,11 @@ ScatterBoxplot <-
                           group = x_,
                           ...
                          )) +
-      geom_point(size = point.size,
-                 alpha = point.alpha) +
+      do.call(what = geom_point,
+              args = point.args) +
       scale_x_continuous(
         breaks = df.rescale$scaled,
-        labels = df.rescale[[x_]]) +
+        labels = df.rescale[[labels_]]) +
       SysBioSigTheme::theme_sysbiosig(...)
 
     return(g.plot)
